@@ -1,16 +1,19 @@
 package main
 
-import(
+import (
+	"log"
+	"os"
+
+	"github.com/gin-gonic/gin"
 	"github.com/praveen/ecommerce/controllers"
 	"github.com/praveen/ecommerce/database"
 	"github.com/praveen/ecommerce/middleware"
 	"github.com/praveen/ecommerce/routes"
-	"github.com/gin-gonic/gin"
 )
 
-func main(){
+func main() {
 	port := os.Getenv("PORT")
-	if port == ""{
+	if port == "" {
 		port = "8000"
 	}
 
