@@ -46,7 +46,8 @@ func UserData(client *mongo.Client, collectionname string) *mongo.Collection{
 
 
 func ProductData(client *mongo.Client, collectionname string) *mongo.Collection{
-	var productCollection
+	var productCollection *mongo.Collection = client.Database("Ecommerce").collection(collectionName)
+	return collection
 
 
 }
