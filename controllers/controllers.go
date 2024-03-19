@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -84,6 +86,40 @@ func SignUp() gin.HandlerFunc {
 }
 
 func Login() gin.HandleFunc {
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+
+		var user models.User
+
+		c.BindJSON(&user)
+		if err := c.BINDJSON(&user); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
+
+		UserCollection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&founduser)
+		defer cancel()
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "login or password incorrect"})
+		}
+
+		PasswordIsValid, msg := VerifyPassword(*user.Password, *founduser.Password)
+		defer cancel()
+
+		if !PasswordIsValid {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Password incorrect"})
+			fmt.Println(msg)
+			return
+		}
+		token, refreshToken, _ := generate.TokenGenerator(*founduser.Email, *founduser.First_Name, *founduser.Last_Name, *founduser.User_ID)
+		defer cancel()
+
+		generate.UpdateAllToken(token, refreshToken, founduser.User_ID)
+		c.JSON(http.StatusNotFound, founduser)
+
+	}
 
 }
 
