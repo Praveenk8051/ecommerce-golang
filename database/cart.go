@@ -55,9 +55,13 @@ func RemoveCartItem(ctx context.Context, prodCollection, userCollection *mongoCo
 		return ErrUserIdIsNotValid
 	}
 	filter := bson.D{primitive.E{Key: "_id", Value: id}}
-	update := bson.D{{Key: "$push", Value: bson.D{primitive.E{Key: "usercart", Value: bson.D{{Key: "$each", Value: productCart}}}}}}
+	update := bson.D{"$pull": bson.M{"usercart": bson.M{"_id": productID}}}
 
-	_, err = userCollection.UpdateOne(ctx, filter, update)
+	_, err = UpdateMany(ctx, filter, update)
+	if err != nil {
+		return ErrCantRemoteRemoveItemCart
+	}
+	return nil
 }
 
 func BuyItemFromCart() {
