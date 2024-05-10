@@ -27,7 +27,7 @@ To get started with the project, follow these steps:
 
 1. **Clone the Repository**: Clone this repository to your local machine.
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/Praveenk8051/ecommerce-golang.git
 
 2. **Install Docker and Docker Compose**: If you haven't already, make sure Docker and Docker Compose are installed on your system.
 
