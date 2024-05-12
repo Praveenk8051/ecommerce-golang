@@ -11,11 +11,11 @@ func Authentication() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ClientToken := c.Request.Header.Get("token")
 		if ClientToken == "" {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "No authorisation provided"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "No Authorization Header Provided"})
 			c.Abort()
 			return
 		}
-		claims, err := token.ValidateTokens(ClientToken)
+		claims, err := token.ValidateToken(ClientToken)
 		if err != "" {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 			c.Abort()
